@@ -1,0 +1,108 @@
+_schema-version: 3.3.0
+ID: mrpl-assetdisposal
+version: 1.0.0
+description: "MRPL Asset Disposal Management"
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: mrpl-assetdisposal-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: mrpl-assetdisposal-db
+      - name: mrpl-assetdisposal-auth
+      - name: mrpl-assetdisposal-connectivity
+      - name: mrpl-assetdisposal-destination
+      # - name: mrpl-assetdisposal-logging
+
+  - name: mrpl-assetdisposal-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: mrpl-assetdisposal-db
+
+  # - name: mrpl-assetdisposal-app-deployer
+  #   type: com.sap.application.content
+  #   path: gen
+  #   requires:
+  #     - name: mrpl-assetdisposal-html5-repo-host
+  #       parameters:
+  #         content-target: true
+  #   build-parameters:
+  #     build-result: app/
+  #     requires:
+
+resources:
+  - name: mrpl-assetdisposal-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: mrpl-assetdisposal-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: mrpl-assetdisposal
+        tenant-mode: dedicated
+  - name: mrpl-assetdisposal-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+  - name: mrpl-assetdisposal-destination
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: srv-api
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: mrpl-assetdisposal-srv-api
+                URL: ~{srv-api/srv-url}
+                Authentication: OAuth2UserTokenExchange
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+  - name: mrpl-assetdisposal-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  # - name: mrpl-assetdisposal-logging
+  #   type: org.cloudfoundry.managed-service
+  #   parameters:
+  #     service: application-logs
+  #     service-plan: standard

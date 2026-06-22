@@ -1,0 +1,22 @@
+{
+ "xsappname": "mrpl-assetdisposal",
+ "tenant-mode": "dedicated",
+ "description": "Security profile of called application",
+ "scopes": [ 
+ ],
+ "role-templates": [  
+ ],
+ "role-collections": [   
+ ],
+ "oauth2-configuration": {
+  "credential-types": [
+   "binding-secret",
+   "x509"
+  ],
+  "redirect-uris": [
+   "https://*.cfapps.ap10.hana.ondemand.com/**",
+   "https://*.cfapps.ap10.hana.ondemand.com/login/callback"
+  ]
+ },
+ "attributes": []
+}
