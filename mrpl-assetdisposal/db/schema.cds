@@ -14,8 +14,11 @@ entity CADARequests : cuid, managed {
     RequestedByName : String(120);
     BuyBackApplicable : Boolean default false;
     CSRDistribution : Boolean default false;
-    DisposalMode : Association to DisposalModes;
-    TransferDepartment : Association to Departments;
+    FinanceComment : LargeString;
+    NoteForApproval : LargeString;
+    VersionNo : Integer default 1;
+    ModeOfDisposalRecommended : LargeString;
+    RepairTransferredTo : LargeString;
     ReasonForDisposal : LargeString;
     AlternativeUsesExplored : LargeString;
     TotalOriginalCost : Decimal(15,2);
