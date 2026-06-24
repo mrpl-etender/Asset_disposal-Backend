@@ -1,10 +1,5 @@
 using sap.mrpl.assetdisposal as db from '../db/schema';
 
-<<<<<<< HEAD
-@requires: 'authenticated-user'
-=======
-//@requires: 'authenticated-user'
->>>>>>> 68e6d3c (24-06-2026)
 
 
 service CapitalAssetsDisposalService  {
