@@ -28,6 +28,9 @@ modules:
     requires:
       - name: mrpl-assetdisposal-db
       - name: mrpl-assetdisposal-auth
+        parameters:
+          service-key:
+          name: mrpl-assetdisposal-key
       - name: mrpl-assetdisposal-connectivity
       - name: mrpl-assetdisposal-destination
       # - name: mrpl-assetdisposal-logging
@@ -83,16 +86,6 @@ resources:
         init_data:
           instance:
             existing_destinations_policy: update
-<<<<<<< HEAD
-            destinations:
-              - Name: mrpl-assetdisposal-srv-api
-                URL: ~{srv-api/srv-url}
-                Authentication: OAuth2UserTokenExchange
-                Type: HTTP
-                ProxyType: Internet
-                HTML5.ForwardAuthToken: true
-                HTML5.DynamicDestination: true
-=======
             destinations:              
               - Name: mrpl-assetdisposal-srv-api
                 URL: ~{srv-api/srv-url}
@@ -104,7 +97,6 @@ resources:
                 HTML5.Timeout: 60000
                 WebIDEEnabled: true
                 WebIDEUsage: odata_gen
->>>>>>> 68e6d3c (24-06-2026)
               - Authentication: NoAuthentication
                 Name: ui5
                 ProxyType: Internet
