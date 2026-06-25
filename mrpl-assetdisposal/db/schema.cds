@@ -5,8 +5,56 @@ using {
     managed, sap.common.CodeList
 } from '@sap/cds/common';
 
-entity CADARequests : cuid, managed {
-    RequestNo : String(20);
+entity AssetDisposalMstr : cuid, managed {
+    key RequestNo       : Integer
+                            @title: 'Request No';
+
+    ProcessCode         : Association to one ProcessCode default 'X'
+                            @title: 'Process Code';
+
+    DocumentStatus      : Association to one DocumentStatus default 'X'
+                            @title: 'Document Status';
+
+    WorkflowStatus      : Association to one WorkflowStatus default 'Draft'
+                            @title: 'Workflow Status';
+
+    cada                : Composition of one CADARequests
+                            on cada.RequestNo = $self;
+}
+
+@cds.odata.valuelist
+entity ProcessCode : CodeList {
+    key code : String enum {
+        new   = 'X';
+        CADA  = 'A';
+    };
+    criticality : Integer;
+}
+
+@cds.odata.valuelist
+entity DocumentStatus : CodeList {
+    key code : String enum {
+        NotCreated = 'X';
+        Created    = 'C';
+        Submitted  = 'S';
+        Completed  = 'E';
+    };
+    criticality : Integer;
+}
+
+@cds.odata.valuelist
+entity WorkflowStatus : CodeList {
+    key code        : String enum {
+        NotStarted = 'X';
+        Rejected   = 'R';
+        Pending    = 'P';
+        Approved   = 'A';
+    };
+    criticality     : Integer;
+}
+
+entity CADARequests : managed {
+    RequestNo : Association to one AssetDisposalMstr;
     RequestDate : Date;
 
     @mandatory
@@ -23,7 +71,7 @@ entity CADARequests : cuid, managed {
 
     @mandatory
     CSRDistribution : Boolean default false;
-    
+
     FinanceComment : LargeString;
     NoteForApproval : LargeString;
     VersionNo : Integer default 1;
@@ -32,20 +80,11 @@ entity CADARequests : cuid, managed {
 
     @mandatory
     ReasonForDisposal : LargeString;
-    
+
     AlternativeUsesExplored : LargeString;
     TotalOriginalCost : Decimal(15,2);
     TotalWrittenDownValue : Decimal(15,2);
 
-    WorkflowStatus : Association to one WorkflowStatus default 'Draft'
-                     @title: 'Workflow Status';
-                     
-    WorkflowInstanceId : String(100);
-    TaskInstanceId : String(100);
-    CurrentApproverId : String(50);
-    CurrentApproverName : String(120);
-    SubmittedOn : Timestamp;
-    ApprovedOn : Timestamp;
     items : Composition of many CADAAssets on items.parent = $self;
     approvals : Composition of many ApprovalHistory on approvals.parent = $self;
     comments : Composition of many Comments on comments.parent = $self;
@@ -70,7 +109,7 @@ entity CADAAssets : cuid, managed {
 
     @mandatory
     UOM : Association to UOM;
-    
+
     AssetLocation : String(100);
     ExistingPONumber : String(20);
     ExistingPODate : Date;
@@ -86,7 +125,7 @@ entity CADAAssets : cuid, managed {
     RebateWrittenDownValue : Decimal(15,2);
     @mandatory
     RebateClaimYear : String(4);
-    
+
     DisposalType : Association to one DisposalType default 'Scrap'
                    @title: 'Disposal Type';
 
@@ -100,7 +139,7 @@ entity ApprovalHistory : cuid, managed {
     ApproverId : String(20);
     ApproverName : String(120);
     Designation : String(120);
-    
+
     ApprovalStatus : Association to one ApprovalStatus default 'Pending'
                      @title: 'Approval Status';
 
@@ -136,19 +175,6 @@ entity ApprovalMatrix : cuid, managed {
     ApprovalLevel : Integer;
     ApproverRole : String(50);
     Active : Boolean default true;
-}
-
-@cds.odata.valuelist
-entity WorkflowStatus : CodeList {
-    key code : String enum {
-        Draft      = 'Draft';
-        Submitted  = 'Submitted';
-        InApproval = 'InApproval';
-        Approved   = 'Approved';
-        Rejected   = 'Rejected';
-        Cancelled  = 'Cancelled';
-    };
-    criticality : Integer;
 }
 
 @cds.odata.valuelist
