@@ -15,4 +15,5 @@ service CapitalAssetsDisposalService  {
     entity Employees as projection on db.Employees; 
     entity AssetMaster as projection on db.AssetMaster;
     entity UOM as projection on db.UOM;
+    entity AssetDisposalMaster as projection on db.AssetDisposalMaster;
 }

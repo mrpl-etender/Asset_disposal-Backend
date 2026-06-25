@@ -54,7 +54,7 @@ entity WorkflowStatus : CodeList {
 }
 
 entity CADARequests : managed {
-    RequestNo : Association to one AssetDisposalMaster;
+    key RequestNo : Association to one AssetDisposalMaster;
     RequestDate : Date;
 
     @mandatory
