@@ -5,7 +5,7 @@ using {
     managed, sap.common.CodeList
 } from '@sap/cds/common';
 
-entity AssetDisposalMstr : cuid, managed {
+entity AssetDisposalMaster : cuid, managed {
     key RequestNo       : Integer
                             @title: 'Request No';
 
@@ -54,7 +54,7 @@ entity WorkflowStatus : CodeList {
 }
 
 entity CADARequests : managed {
-    RequestNo : Association to one AssetDisposalMstr;
+    RequestNo : Association to one AssetDisposalMaster;
     RequestDate : Date;
 
     @mandatory
