@@ -1,0 +1,17 @@
+######
+POST http://localhost:4004/odata/v4/capital-assets-disposal/AssetDisposalMaster
+Content-Type: application/json
+
+{
+    "ProcessCode_code": "X",
+    "DocumentStatus_code": "X",
+    "WorkflowStatus_code": "Draft",
+    "cada": {
+        "RequestDate": "2026-06-26",
+        "Plant": "P_001",
+        "Department": "D_001",
+        "BuyBackApplicable": "false",
+        "CSRDistribution": "false",
+        "ReasonForDisposal": "Testing sequence"
+    }
+}

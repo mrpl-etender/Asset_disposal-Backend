@@ -6,7 +6,7 @@ service CapitalAssetsDisposalService  {
        
     entity CADARequests as projection on db.CADARequests;
     entity CADAAssets as projection on db.CADAAssets;
-    entity ApprovalHistory as projection on db.ApprovalHistory;
+    entity CadaApp as projection on db.CadaApp;
     entity Comments as projection on db.Comments;
     entity Attachments as projection on db.Attachments;
     entity Plants as projection on db.Plants;
@@ -16,4 +16,5 @@ service CapitalAssetsDisposalService  {
     entity AssetMaster as projection on db.AssetMaster;
     entity UOM as projection on db.UOM;
     entity AssetDisposalMaster as projection on db.AssetDisposalMaster;
+    entity EmployeeAuthMaster  as projection on db.EmpAuthLevels;
 }

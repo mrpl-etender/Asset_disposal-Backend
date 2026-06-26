@@ -10,5 +10,7 @@
   "src/gen/sap.mrpl.assetdisposal.UoMs.hdbtable",
   "src/gen/data/sap.mrpl.assetdisposal-AssetMasters.csv",
   "src/gen/data/sap.mrpl.assetdisposal-AssetMasters.hdbtabledata",
-  "src/gen/sap.mrpl.assetdisposal.AssetMasters.hdbtable"
+  "src/gen/sap.mrpl.assetdisposal.AssetMasters.hdbtable",
+  "src/gen/sap.mrpl.assetdisposal.EmpAuthLevels.hdbtable",
+  "src/gen/sap.mrpl.assetdisposal.EmpAuthLevels.hdbtable"
 ]
