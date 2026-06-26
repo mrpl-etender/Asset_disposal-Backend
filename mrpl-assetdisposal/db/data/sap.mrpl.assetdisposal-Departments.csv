@@ -1,0 +1,4 @@
+DeptCode,DeptName,Plant_PlantCode,Active
+IT,Information Technology,PL01,true
+HR,Human Resources,PL01,true
+FIN,Finance,PL02,true

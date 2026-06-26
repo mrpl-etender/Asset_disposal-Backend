@@ -2,34 +2,89 @@ namespace sap.mrpl.assetdisposal;
 
 using {
     cuid,
-    managed
+    managed, sap.common.CodeList
 } from '@sap/cds/common';
 
-entity CADARequests : cuid, managed {
-    RequestNo : String(20);
+entity AssetDisposalMaster : cuid, managed {
+    key RequestNo       : Integer
+                            @title: 'Request No';
+
+    ProcessCode         : Association to one ProcessCode default 'X'
+                            @title: 'Process Code';
+
+    DocumentStatus      : Association to one DocumentStatus default 'X'
+                            @title: 'Document Status';
+
+    WorkflowStatus      : Association to one WorkflowStatus default 'Draft'
+                            @title: 'Workflow Status';
+
+    cada                : Composition of one CADARequests
+                            on cada.RequestNo = $self;
+}
+
+@cds.odata.valuelist
+entity ProcessCode : CodeList {
+    key code : String enum {
+        new   = 'X';
+        CADA  = 'A';
+    };
+    criticality : Integer;
+}
+
+@cds.odata.valuelist
+entity DocumentStatus : CodeList {
+    key code : String enum {
+        NotCreated = 'X';
+        Created    = 'C';
+        Submitted  = 'S';
+        Completed  = 'E';
+    };
+    criticality : Integer;
+}
+
+@cds.odata.valuelist
+entity WorkflowStatus : CodeList {
+    key code        : String enum {
+        NotStarted = 'X';
+        Rejected   = 'R';
+        Pending    = 'P';
+        Approved   = 'A';
+    };
+    criticality     : Integer;
+}
+
+entity CADARequests : managed {
+    key RequestNo : Association to one AssetDisposalMaster;
     RequestDate : Date;
+
+    @mandatory
     Plant : Association to Plants;
+
+    @mandatory
     Department : Association to Departments;
+
     RequestedBy : String(20);
     RequestedByName : String(120);
+
+    @mandatory
     BuyBackApplicable : Boolean default false;
+
+    @mandatory
     CSRDistribution : Boolean default false;
+
     FinanceComment : LargeString;
     NoteForApproval : LargeString;
     VersionNo : Integer default 1;
     ModeOfDisposalRecommended : LargeString;
     RepairTransferredTo : LargeString;
+
+    @mandatory
     ReasonForDisposal : LargeString;
+
     AlternativeUsesExplored : LargeString;
     TotalOriginalCost : Decimal(15,2);
     TotalWrittenDownValue : Decimal(15,2);
-    WorkflowStatus : WorkflowStatus default 'Draft';
-    WorkflowInstanceId : String(100);
-    TaskInstanceId : String(100);
-    CurrentApproverId : String(50);
-    CurrentApproverName : String(120);
-    SubmittedOn : Timestamp;
-    ApprovedOn : Timestamp;
+
     items : Composition of many CADAAssets on items.parent = $self;
     approvals : Composition of many ApprovalHistory on approvals.parent = $self;
     comments : Composition of many Comments on comments.parent = $self;
@@ -38,11 +93,23 @@ entity CADARequests : cuid, managed {
 
 entity CADAAssets : cuid, managed {
     parent : Association to CADARequests;
-    AssetNumber : String(30);
+
+    @mandatory
+    AssetNumber :  Association to AssetMaster;
+
+    @mandatory
     AssetDescription : String(500);
-    ItemCoverage : CoverageType;
+
+    @mandatory
+    ItemCoverage : Association to one CoverageType default 'Partial'
+                   @title: 'Item Coverage';
+
+    @mandatory
     Quantity : Decimal(13,3);
-    UOM : String(10);
+
+    @mandatory
+    UOM : Association to UOM;
+
     AssetLocation : String(100);
     ExistingPONumber : String(20);
     ExistingPODate : Date;
@@ -51,10 +118,17 @@ entity CADAAssets : cuid, managed {
     BudgetCode : String(30);
     OriginalCost : Decimal(15,2);
     WrittenDownValue : Decimal(15,2);
+
+    @mandatory
     RebateOriginalCost : Decimal(15,2);
+    @mandatory
     RebateWrittenDownValue : Decimal(15,2);
+    @mandatory
     RebateClaimYear : String(4);
-    DisposalType : DisposalType;
+
+    DisposalType : Association to one DisposalType default 'Scrap'
+                   @title: 'Disposal Type';
+
     EstimatedSaleValue : Decimal(15,2);
     Remarks : LargeString;
 }
@@ -65,7 +139,10 @@ entity ApprovalHistory : cuid, managed {
     ApproverId : String(20);
     ApproverName : String(120);
     Designation : String(120);
-    ApprovalStatus : ApprovalStatus;
+
+    ApprovalStatus : Association to one ApprovalStatus default 'Pending'
+                     @title: 'Approval Status';
+
     Remarks : LargeString;
     ActionDate : Timestamp;
 }
@@ -100,20 +177,37 @@ entity ApprovalMatrix : cuid, managed {
     Active : Boolean default true;
 }
 
-type WorkflowStatus : String enum {
-    Draft; Submitted; InApproval; Approved; Rejected; Cancelled;
+@cds.odata.valuelist
+entity ApprovalStatus : CodeList {
+    key code : String enum {
+        Pending  = 'Pending';
+        Approved = 'Approved';
+        Rejected = 'Rejected';
+        Returned = 'Returned';
+    };
+    criticality : Integer;
 }
 
-type ApprovalStatus : String enum {
-    Pending; Approved; Rejected; Returned;
+@cds.odata.valuelist
+entity DisposalType : CodeList {
+    key code : String enum {
+        Scrap    = 'Scrap';
+        Sale     = 'Sale';
+        Transfer = 'Transfer';
+        BuyBack  = 'BuyBack';
+        Donation = 'Donation';
+        CSR      = 'CSR';
+    };
+    criticality : Integer;
 }
 
-type DisposalType : String enum {
-    Scrap; Sale; Transfer; BuyBack; Donation; CSR;
-}
-
-type CoverageType : String enum {
-    Complete; Partial;
+@cds.odata.valuelist
+entity CoverageType : CodeList {
+    key code : String enum {
+        Complete = 'Complete';
+        Partial  = 'Partial';
+    };
+    criticality : Integer;
 }
 
 entity Plants {
@@ -142,4 +236,18 @@ entity Employees {
     Email : String(255);
     Designation : String(100);
     Department : Association to Departments;
+}
+
+entity AssetMaster {
+    key AssetNo : String(30);
+    AssetDescription : String(500);
+    UOM : Association to UOM;
+    AssetLocation : String(100);
+    Active : Boolean default true;
+}
+
+entity UOM {
+    key UOMCode : String(10);
+    UOMDescription : String(50);
+    Active : Boolean default true;
 }

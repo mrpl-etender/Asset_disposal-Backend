@@ -3,5 +3,12 @@
   "src/gen/**/*.hdbindex",
   "src/gen/**/*.hdbconstraint",
   "src/gen/**/*_drafts.hdbtable",
-  "src/gen/**/*.hdbcalculationview"
+  "src/gen/**/*.hdbcalculationview",
+  "src/gen/data/sap.mrpl.assetdisposal-UoM.csv",
+  "src/gen/data/sap.mrpl.assetdisposal-UoM.hdbtabledata",
+  "src/gen/sap.mrpl.assetdisposal.UoM.hdbtable",
+  "src/gen/sap.mrpl.assetdisposal.UoMs.hdbtable",
+  "src/gen/data/sap.mrpl.assetdisposal-AssetMasters.csv",
+  "src/gen/data/sap.mrpl.assetdisposal-AssetMasters.hdbtabledata",
+  "src/gen/sap.mrpl.assetdisposal.AssetMasters.hdbtable"
 ]
