@@ -3,12 +3,11 @@ const SequenceHelper = require('./lib/SequenceHelper');
 
 module.exports = cds.service.impl(async function () {
 
-    this.before('CREATE', 'AssetDisposalMaster', async (req) => {
+   this.before('CREATE', 'AssetDisposalMaster', async (req) => {
         try {
-
             // 1. GENERATE REQUESTNO 
             const masterDef = cds.model.definitions['sap.mrpl.assetdisposal.AssetDisposalMaster'];
-            const masterTable = masterDef['@cds.persistence.name'] || masterDef.name.replace(/\./g, '_');
+            const masterTable = masterDef['@cds.persistence.name'] || masterDef.name.replace(/\./g, '_').toUpperCase();
 
             const masterSeqHelper = new SequenceHelper({
                 db: cds.db,
@@ -19,13 +18,12 @@ module.exports = cds.service.impl(async function () {
 
             const nextMasterNo = await masterSeqHelper.getNextNumber();
             const generatedRequestNo = String(nextMasterNo).padStart(3, '0'); // e.g., "001"
-
             req.data.RequestNo = generatedRequestNo;
 
             // 2. GENERATE CADANO 
             if (req.data.cada) {
                 const cadaDef = cds.model.definitions['sap.mrpl.assetdisposal.CADARequests'];
-                const cadaTable = cadaDef['@cds.persistence.name'] || cadaDef.name.replace(/\./g, '_');
+                const cadaTable = cadaDef['@cds.persistence.name'] || cadaDef.name.replace(/\./g, '_').toUpperCase();
 
                 const cadaSeqHelper = new SequenceHelper({
                     db: cds.db,

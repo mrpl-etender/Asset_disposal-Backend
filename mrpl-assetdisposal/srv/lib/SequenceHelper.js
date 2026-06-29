@@ -12,15 +12,13 @@ class SequenceHelper {
                 const result = await this.db.run(
                     `SELECT "${this.sequence}".NEXTVAL AS "NEXTVAL" FROM DUMMY`
                 );
-        
                 const row = Array.isArray(result) ? result[0] : result;
                 return parseInt(row.NEXTVAL ?? row.nextval, 10);
             }
 
             case 'sql':
             case 'sqlite': {
-               
-                // fallback column is stored as a String (e.g. RequestNo, CADANo)
+                
                 const result = await this.db.run(
                     `SELECT MAX(CAST("${this.field}" AS INTEGER)) AS "MAXVAL" FROM "${this.table}"`
                 );
