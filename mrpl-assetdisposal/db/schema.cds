@@ -5,7 +5,7 @@ using {
     managed, sap.common.CodeList
 } from '@sap/cds/common';
 
-entity AssetDisposalMaster : cuid, managed {
+entity AssetDisposalMaster : managed {
    key RequestNo       : String(10) @title: 'Request No';
 
     ProcessCode         : Association to one ProcessCode default 'X'
@@ -53,7 +53,7 @@ entity WorkflowStatus : CodeList {
 }
 
 entity CADARequests : managed {
-    CADANo : String(10);
+    key CADANo : String(10);
     key RequestNo : Association to one AssetDisposalMaster;
     RequestDate : Date;
 
@@ -112,16 +112,12 @@ entity CADAAssets : cuid, managed {
     AssetLocation : String(100);
     ExistingPONumber : String(20);
     ExistingPODate : Date;
-    ReplacementRequired : Boolean default false;
+    ReplacementRequired : String;
     NewPRNumber : String(20);
     BudgetCode : String(30);
     OriginalCost : Decimal(15,2);
     WrittenDownValue : Decimal(15,2);
 
-    @mandatory
-    RebateOriginalCost : Decimal(15,2);
-    @mandatory
-    RebateWrittenDownValue : Decimal(15,2);
     @mandatory
     RebateClaimYear : String(4);
 

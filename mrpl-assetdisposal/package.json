@@ -9,6 +9,7 @@
     "@cap-js-community/odata-v2-adapter": "^1.13.1",
     "@cap-js/hana": "^1",
     "@sap/cds": "^8",
+    "@sap/cds-odata-v2-adapter-proxy": "^1.9.21",
     "@sap/xssec": "^4",
     "express": "^4"
   },
@@ -38,7 +39,7 @@
     "destinations": true,
     "connectivity": true,
     "db": {
-      "kind": "sqlite"      
+      "kind": "sqlite"
     },
     "html5-repo": true,
     "workzone": true,
