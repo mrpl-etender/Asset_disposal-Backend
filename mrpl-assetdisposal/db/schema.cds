@@ -62,10 +62,10 @@ entity CADARequests : managed {
     RequestDate : Date;
 
     // @mandatory
-    Plant : String(25);
+    Plant : String(4);
 
     // @mandatory
-    Department : String(50);
+    Department : String(10);
 
     RequestedBy : String(20);
     RequestedByName : String(120);
@@ -90,9 +90,9 @@ entity CADARequests : managed {
     TotalWrittenDownValue : Decimal(15,2);
 
     items : Composition of many CADAAssets on items.interaction = $self;
-    approvals : Composition of many CadaApp on approvals.interaction = $self;
+    approvals : Composition of many CADAApprovals on approvals.interaction = $self;
     // attachments : Composition of many Attachments on attachments.interaction = $self; 
-    // comments : Composition of many Comments on comments.interaction = $self;
+    // comments : Composition of many CADAComments on comments.interaction = $self;
 }
 
 entity CADAAssets : cuid, managed {
@@ -103,10 +103,10 @@ entity CADAAssets : cuid, managed {
     key VersionNo : Integer;
 
     // @mandatory
-    AssetNumber : String(30);
+    AssetNumber : String(12);
 
     // @mandatory
-    AssetDescription : String(500);
+    AssetDescription : String(50);
 
     // @mandatory
     ItemCoverage : String(30);
@@ -115,9 +115,9 @@ entity CADAAssets : cuid, managed {
     Quantity : Decimal(13,3);
 
     // @mandatory
-    UOM : String(10);
+    UOM : String(3);
 
-    AssetLocation : String(100);
+    AssetLocation : String(50);
     ExistingPONumber : String(20);
     ExistingPODate : Date;
     ReplacementRequired : String;
@@ -136,7 +136,7 @@ entity CADAAssets : cuid, managed {
     Remarks : LargeString;
 }
 
-entity CadaApp :  managed {
+entity CADAApprovals :  managed {
         interaction : Association to  CADARequests;
     key CADANo      : String(10);
     key VersionNo   : Integer;
@@ -159,7 +159,7 @@ entity EmpAuthLevels {
         description : String(100);
 }
 
-entity Comments : cuid, managed {
+entity CADAComments : cuid, managed {
     interaction : Association to CADARequests;
     EmployeeId : String(20);
     EmployeeName : String(120);
@@ -242,7 +242,7 @@ entity DisposalModes {
     Active : Boolean default true;
 }
 
-entity Employees {
+entity EmployeeMaster {
     key Emp_Code        : String(50);   
     Emp_name            : String(255);  
     Emp_Auth_l          : String(100); 
@@ -256,10 +256,10 @@ entity Employees {
 }
 
 entity AssetMaster {
-    key AssetNo : String(30);
-    AssetDescription : String(500);
+    key AssetNo : String(12);
+    AssetDescription : String(50);
     UOM : Association to UOM;
-    AssetLocation : String(100);
+    AssetLocation : String(50);
     Active : Boolean default true;
 }
 

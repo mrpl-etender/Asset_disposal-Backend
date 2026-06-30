@@ -1,11 +1,11 @@
 const cds = require('@sap/cds');
 const SequenceHelper = require('./lib/SequenceHelper');
-const { CADARequests, CADAAssets, CadaApp} = cds.entities('sap.mrpl.assetdisposal');
+const { CADARequests, CADAAssets, CADAApprovals} = cds.entities('sap.mrpl.assetdisposal');
 const {SELECT,INSERT,UPDATE,DELETE} = require("@sap/cds/lib/ql/cds-ql");
 
 module.exports = cds.service.impl((srv) => {
     srv.before("CREATE", "AssetDisposalMaster", _AssetDisposalSequenceR);
-    srv.on("createNewVersion", _createNewVersion);
+    srv.on("createCADARequestVersion", _createCADARequestVersion);
 });
 
 const _AssetDisposalSequenceR = async (req) => {
@@ -69,7 +69,7 @@ const _AssetDisposalSequenceR = async (req) => {
 
 }
 
-const _createNewVersion = async (req) => {
+const _createCADARequestVersion = async (req) => {
 
     try {
         let { RequestNo } = req.data;
@@ -96,7 +96,7 @@ const _createNewVersion = async (req) => {
                 interaction_VersionNo: existingRequest.VersionNo
             });
 
-        const existingApprovals = await SELECT.from(CadaApp)
+        const existingApprovals = await SELECT.from(CADAApprovals)
             .where({
                 interaction_CADANo: fixedCADANo,
                 interaction_RequestNo_RequestNo: RequestNo,
@@ -153,7 +153,7 @@ const _createNewVersion = async (req) => {
                 modifiedBy: req.user?.id ?? 'system',
             }));
 
-            await INSERT.into(CadaApp).entries(newApprovals);
+            await INSERT.into(CADAApprovals).entries(newApprovals);
         }
 
         return {
