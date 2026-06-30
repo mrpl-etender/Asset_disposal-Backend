@@ -3,24 +3,94 @@ POST http://localhost:4004/odata/v2/capital-assets-disposal/AssetDisposalMaster
 Content-Type: application/json
 
 {
-    "RequestNo": "",
-    "ProcessCode_code": "A",
-    "DocumentStatus_code": "C",
-    "WorkflowStatus_code": "X",
-    "cada": {
+  "RequestNo": "",
+  "ProcessCode_code": "A",
+  "DocumentStatus_code": "C",
+  "WorkflowStatus_code": "X",
+  "cada": {
+    "Plant": "Petrochemical Unit",
+    "Department": "Finance",
+    "RequestDate": "\/Date(1782325800000)\/",
+    "BuyBackApplicable": "Yes",
+    "CSRDistribution": "No",
+    "VersionNo": 1,
+    "CADANo": "",
+    "approvals": [
+      {
+        "Emp_Auth_l": "Level 1",
+        "Emp_Code": "E001",
+        "Emp_name": "John Doe",
+        "Department": "Finance",
+        "Emp_email": "abcdefgh@gamil.com",
+        "Emp_Desg": "Manager",
+        "Remark": "",
+        "Status": "",
         "CADANo": "",
-        "RequestDate": "2026-06-29",
-        "Plant": "Petrochemical Unit",
-        "Department": "Information Technology",
-        "RequestedBy": "EMP0432",
-        "RequestedByName": "John Doe",
-        "BuyBackApplicable": "true", 
-        "CSRDistribution": "false",
-        "ReasonForDisposal": "Asset life cycle ended.",
-        "AlternativeUsesExplored": "None viable",
-        "ModeOfDisposalRecommended": "Scrap Sale",
-        "RepairTransferredTo": "",
-        "TotalOriginalCost": 75000.00,
-        "TotalWrittenDownValue": 5000.00
-    }
+         "Level": 1,
+        "VersionNo": 1
+      },
+      {
+        "Emp_Auth_l": " Level 2",
+        "Emp_Code": "E002",
+        "Emp_name": "Jane Smith",
+        "Department": "IT",
+        "Emp_email": "jane.smith@gamil.com",
+        "Emp_Desg": "Senior Developer",
+        "Remark": "",
+        "Status": "",
+        "CADANo": "",
+         "Level": 2,
+        "VersionNo": 1
+      }
+    ],
+    "items": [
+      {
+        "AssetNumber": "1000001",
+        "ItemCoverage": "Complete",
+        "AssetDescription": "Dell OptiPlex Desktop",
+        "Quantity": "10",
+        "UOM": "Nos",
+        "ExistingPONumber": "4500001234",
+        "ExistingPODate": "2024-05-15",
+        "AssetLocation": "Admin Block",
+        "ReplacementRequired": "Yes",
+        "NewPRNumber": "4600001111",
+        "BudgetCode": "",
+        "OriginalCost": 1,
+        "WrittenDownValue": 120000,
+        "RebateClaimYear": "2024",
+        "ID": 1,
+        "CADANo": "",
+        "VersionNo": 1
+      },
+      {
+        "AssetNumber": "1000002",
+        "ItemCoverage": "Partial",
+        "AssetDescription": "Office Chair",
+        "Quantity": "25",
+        "UOM": "Nos",
+        "ExistingPONumber": "4500002234",
+        "ExistingPODate": "2023-11-20",
+        "AssetLocation": "HR Department",
+        "ReplacementRequired": "No",
+        "NewPRNumber": "",
+        "BudgetCode": "",
+        "OriginalCost": 1,
+        "WrittenDownValue": 120000,
+        "RebateClaimYear": "2023",
+        "ID": 2,
+        "CADANo": "",
+        "VersionNo": 1
+      }
+    ]
+  }
 }
+
+
+######
+GET http://localhost:4004/odata/v2/capital-assets-disposal/createNewVersion?RequestNo='008'
+Content-Type: application/json
+
+######
+GET http://localhost:4004/odata/v2/capital-assets-disposal/Plants
+Content-Type: application/json

@@ -19,6 +19,9 @@ entity AssetDisposalMaster : managed {
 
     cada                : Composition of one CADARequests
                             on cada.RequestNo = $self;
+
+    attachments         : Composition of many Attachments
+                            on attachments.interaction = $self;
 }
 
 @cds.odata.valuelist
@@ -53,60 +56,65 @@ entity WorkflowStatus : CodeList {
 }
 
 entity CADARequests : managed {
-    key CADANo : String(10);
     key RequestNo : Association to one AssetDisposalMaster;
+    key CADANo : String(10);
+    key VersionNo : Integer;
     RequestDate : Date;
 
-    @mandatory
+    // @mandatory
     Plant : String(25);
 
-    @mandatory
+    // @mandatory
     Department : String(50);
 
     RequestedBy : String(20);
     RequestedByName : String(120);
 
-    @mandatory
+    // @mandatory
     BuyBackApplicable : String;
 
-    @mandatory
+    // @mandatory
     CSRDistribution : String;
 
     FinanceComment : LargeString;
     NoteForApproval : LargeString;
-    VersionNo : Integer default 1;
+    
     ModeOfDisposalRecommended : LargeString;
     RepairTransferredTo : LargeString;
 
-    @mandatory
+    // @mandatory
     ReasonForDisposal : LargeString;
 
     AlternativeUsesExplored : LargeString;
     TotalOriginalCost : Decimal(15,2);
     TotalWrittenDownValue : Decimal(15,2);
 
-    items : Composition of many CADAAssets on items.parent = $self;
-    approvals : Composition of many CadaApp on approvals.parent = $self;
-    comments : Composition of many Comments on comments.parent = $self;
-    attachments : Composition of many Attachments on attachments.parent = $self; 
+    items : Composition of many CADAAssets on items.interaction = $self;
+    approvals : Composition of many CadaApp on approvals.interaction = $self;
+    // attachments : Composition of many Attachments on attachments.interaction = $self; 
+    // comments : Composition of many Comments on comments.interaction = $self;
 }
 
 entity CADAAssets : cuid, managed {
-    parent : Association to CADARequests;
+    interaction : Association to one CADARequests;
 
-    @mandatory
+    key CADANo : String(10);
+    key ID : Integer;
+    key VersionNo : Integer;
+
+    // @mandatory
     AssetNumber : String(30);
 
-    @mandatory
+    // @mandatory
     AssetDescription : String(500);
 
-    @mandatory
+    // @mandatory
     ItemCoverage : String(30);
 
-    @mandatory
+    // @mandatory
     Quantity : Decimal(13,3);
 
-    @mandatory
+    // @mandatory
     UOM : String(10);
 
     AssetLocation : String(100);
@@ -118,7 +126,7 @@ entity CADAAssets : cuid, managed {
     OriginalCost : Decimal(15,2);
     WrittenDownValue : Decimal(15,2);
 
-    @mandatory
+    // @mandatory
     RebateClaimYear : String(4);
 
     DisposalType : Association to one DisposalType default 'Scrap'
@@ -129,8 +137,9 @@ entity CADAAssets : cuid, managed {
 }
 
 entity CadaApp :  managed {
-        parent : Association to  CADARequests;
-    key ID          : String(10);
+        interaction : Association to  CADARequests;
+    key CADANo      : String(10);
+    key VersionNo   : Integer;
     key Emp_Code    : String(8)
         @assert.notNull: false;
     key Level       : Integer
@@ -146,12 +155,12 @@ entity CadaApp :  managed {
 }
 
 entity EmpAuthLevels {
-    key code        : String(50);
+    key Level_ID        : Integer;
         description : String(100);
 }
 
 entity Comments : cuid, managed {
-    parent : Association to CADARequests;
+    interaction : Association to CADARequests;
     EmployeeId : String(20);
     EmployeeName : String(120);
     Status : String(30);
@@ -160,7 +169,7 @@ entity Comments : cuid, managed {
 }
 
 entity Attachments : cuid, managed {
-    parent : Association to CADARequests;
+    interaction : Association to AssetDisposalMaster;
     FileName : String(255);
     MimeType : String(100);
     FileSize : Integer;

@@ -4,6 +4,7 @@ using sap.mrpl.assetdisposal as db from '../db/schema';
 
 service CapitalAssetsDisposalService  {
        
+    entity AssetDisposalMaster as projection on db.AssetDisposalMaster;
     entity CADARequests as projection on db.CADARequests;
     entity CADAAssets as projection on db.CADAAssets;
     entity CadaApp as projection on db.CadaApp;
@@ -13,8 +14,14 @@ service CapitalAssetsDisposalService  {
     entity Departments as projection on db.Departments;
     entity DisposalModes as projection on db.DisposalModes;
     entity Employees as projection on db.Employees; 
+    entity EmployeeAuthMaster  as projection on db.EmpAuthLevels;
     entity AssetMaster as projection on db.AssetMaster;
     entity UOM as projection on db.UOM;
-    entity AssetDisposalMaster as projection on db.AssetDisposalMaster;
-    entity EmployeeAuthMaster  as projection on db.EmpAuthLevels;
+
+    function createNewVersion(RequestNo : String) returns {
+        CADANo       : String;
+        newVersionNo : Integer;
+        message      : String;
+    };
+
 }
