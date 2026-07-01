@@ -5,9 +5,8 @@ using {
     managed, sap.common.CodeList
 } from '@sap/cds/common';
 
-entity AssetDisposalMaster : cuid, managed {
-    key RequestNo       : Integer
-                            @title: 'Request No';
+entity AssetDisposalMaster : managed {
+   key RequestNo       : String(10) @title: 'Request No';
 
     ProcessCode         : Association to one ProcessCode default 'X'
                             @title: 'Process Code';
@@ -20,6 +19,9 @@ entity AssetDisposalMaster : cuid, managed {
 
     cada                : Composition of one CADARequests
                             on cada.RequestNo = $self;
+
+    attachments         : Composition of many Attachments
+                            on attachments.interaction = $self;
 }
 
 @cds.odata.valuelist
@@ -55,75 +57,76 @@ entity WorkflowStatus : CodeList {
 
 entity CADARequests : managed {
     key RequestNo : Association to one AssetDisposalMaster;
+    key CADANo : String(10);
+    key VersionNo : Integer;
     RequestDate : Date;
 
-    @mandatory
-    Plant : Association to Plants;
+    // @mandatory
+    Plant : String(4);
 
-    @mandatory
-    Department : Association to Departments;
+    // @mandatory
+    Department : String(10);
 
     RequestedBy : String(20);
     RequestedByName : String(120);
 
-    @mandatory
-    BuyBackApplicable : Boolean default false;
+    // @mandatory
+    BuyBackApplicable : String;
 
-    @mandatory
-    CSRDistribution : Boolean default false;
+    // @mandatory
+    CSRDistribution : String;
 
     FinanceComment : LargeString;
     NoteForApproval : LargeString;
-    VersionNo : Integer default 1;
+    
     ModeOfDisposalRecommended : LargeString;
     RepairTransferredTo : LargeString;
 
-    @mandatory
+    // @mandatory
     ReasonForDisposal : LargeString;
 
     AlternativeUsesExplored : LargeString;
     TotalOriginalCost : Decimal(15,2);
     TotalWrittenDownValue : Decimal(15,2);
 
-    items : Composition of many CADAAssets on items.parent = $self;
-    approvals : Composition of many ApprovalHistory on approvals.parent = $self;
-    comments : Composition of many Comments on comments.parent = $self;
-    attachments : Composition of many Attachments on attachments.parent = $self;
+    items : Composition of many CADAAssets on items.interaction = $self;
+    approvals : Composition of many CADAApprovals on approvals.interaction = $self;
+    // attachments : Composition of many Attachments on attachments.interaction = $self; 
+    // comments : Composition of many CADAComments on comments.interaction = $self;
 }
 
 entity CADAAssets : cuid, managed {
-    parent : Association to CADARequests;
+    interaction : Association to one CADARequests;
 
-    @mandatory
-    AssetNumber :  Association to AssetMaster;
+    key CADANo : String(10);
+    key ID : Integer;
+    key VersionNo : Integer;
 
-    @mandatory
-    AssetDescription : String(500);
+    // @mandatory
+    AssetNumber : String(12);
 
-    @mandatory
-    ItemCoverage : Association to one CoverageType default 'Partial'
-                   @title: 'Item Coverage';
+    // @mandatory
+    AssetDescription : String(50);
 
-    @mandatory
+    // @mandatory
+    ItemCoverage : String(30);
+
+    // @mandatory
     Quantity : Decimal(13,3);
 
-    @mandatory
-    UOM : Association to UOM;
+    // @mandatory
+    UOM : String(3);
 
-    AssetLocation : String(100);
+    AssetLocation : String(50);
     ExistingPONumber : String(20);
     ExistingPODate : Date;
-    ReplacementRequired : Boolean default false;
+    ReplacementRequired : String;
     NewPRNumber : String(20);
     BudgetCode : String(30);
     OriginalCost : Decimal(15,2);
     WrittenDownValue : Decimal(15,2);
 
-    @mandatory
-    RebateOriginalCost : Decimal(15,2);
-    @mandatory
-    RebateWrittenDownValue : Decimal(15,2);
-    @mandatory
+    // @mandatory
     RebateClaimYear : String(4);
 
     DisposalType : Association to one DisposalType default 'Scrap'
@@ -133,22 +136,31 @@ entity CADAAssets : cuid, managed {
     Remarks : LargeString;
 }
 
-entity ApprovalHistory : cuid, managed {
-    parent : Association to CADARequests;
-    LevelNo : Integer;
-    ApproverId : String(20);
-    ApproverName : String(120);
-    Designation : String(120);
-
-    ApprovalStatus : Association to one ApprovalStatus default 'Pending'
-                     @title: 'Approval Status';
-
-    Remarks : LargeString;
-    ActionDate : Timestamp;
+entity CADAApprovals :  managed {
+        interaction : Association to  CADARequests;
+    key CADANo      : String(10);
+    key VersionNo   : Integer;
+    key Emp_Code    : String(8)
+        @assert.notNull: false;
+    key Level       : Integer
+        @assert.notNull: false;
+        Emp_email   : String(30);
+        Emp_name    : String(100);
+        Emp_Desg    : String(100);
+        Emp_Auth_l  : String(50);
+        Next_level  : Integer;
+        Status      : String(20);
+        Department  : String;
+        Remark      : String(1000);
 }
 
-entity Comments : cuid, managed {
-    parent : Association to CADARequests;
+entity EmpAuthLevels {
+    key Level_ID        : Integer;
+        description : String(100);
+}
+
+entity CADAComments : cuid, managed {
+    interaction : Association to CADARequests;
     EmployeeId : String(20);
     EmployeeName : String(120);
     Status : String(30);
@@ -157,7 +169,7 @@ entity Comments : cuid, managed {
 }
 
 entity Attachments : cuid, managed {
-    parent : Association to CADARequests;
+    interaction : Association to AssetDisposalMaster;
     FileName : String(255);
     MimeType : String(100);
     FileSize : Integer;
@@ -230,19 +242,24 @@ entity DisposalModes {
     Active : Boolean default true;
 }
 
-entity Employees {
-    key EmployeeId : String(20);
-    EmployeeName : String(120);
-    Email : String(255);
-    Designation : String(100);
-    Department : Association to Departments;
+entity EmployeeMaster {
+    key Emp_Code        : String(50);   
+    Emp_name            : String(255);  
+    Emp_Auth_l          : String(100); 
+    Emp_Sub             : String(500);  
+    Emp_Desg            : String(255);  
+    Emp_email           : String(255);  
+    Emp_phone           : String(50);   
+    Department          : String(100);  
+    Department_code     : String(50);   
+    Po_off_code         : String(50);   
 }
 
 entity AssetMaster {
-    key AssetNo : String(30);
-    AssetDescription : String(500);
+    key AssetNo : String(12);
+    AssetDescription : String(50);
     UOM : Association to UOM;
-    AssetLocation : String(100);
+    AssetLocation : String(50);
     Active : Boolean default true;
 }
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0"
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZMM_DAN_TO_SALES_SRV" xml:lang="en" sap:schema-version="1"
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <Annotation Term="Core.SchemaVersion" String="1.0.0"
+                xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+                <EntityType Name="Plant" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="Werks"/>
+                        <PropertyRef Name="Name1"/>
+                    </Key>
+                    <Property Name="Werks" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="Name1" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Name 1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                </EntityType>
+                <EntityType Name="Controlling_Dept" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="Bednr"/>
+                    </Key>
+                    <Property Name="Bednr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Tracking Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                </EntityType>
+                <EntityType Name="Asset" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="Anln1"/>
+                    </Key>
+                    <Property Name="Anln1" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Asset" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="Meins" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
+                    <Property Name="Txt50" Type="Edm.String" MaxLength="50" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                </EntityType>
+                <EntityType Name="Location" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="Zloc"/>
+                    </Key>
+                    <Property Name="Zloc" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:label="Location" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="Phase" Type="Edm.String" MaxLength="100" sap:unicode="false" sap:label="PHASE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                </EntityType>
+                <EntityContainer Name="ZMM_DAN_TO_SALES_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                    <EntitySet Name="PlantSet" EntityType="ZMM_DAN_TO_SALES_SRV.Plant" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                    <EntitySet Name="Controlling_DeptSet" EntityType="ZMM_DAN_TO_SALES_SRV.Controlling_Dept" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                    <EntitySet Name="AssetSet" EntityType="ZMM_DAN_TO_SALES_SRV.Asset" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                    <EntitySet Name="LocationSet" EntityType="ZMM_DAN_TO_SALES_SRV.Location" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                </EntityContainer>
+                <atom:link rel="self" href="https://vhmfpmrdci.mrpl.co.in:44300/sap/opu/odata/sap/ZMM_DAN_TO_SALES_SRV/$metadata"
+                    xmlns:atom="http://www.w3.org/2005/Atom"/>
+                    <atom:link rel="latest-version" href="https://vhmfpmrdci.mrpl.co.in:44300/sap/opu/odata/sap/ZMM_DAN_TO_SALES_SRV/$metadata"
+                        xmlns:atom="http://www.w3.org/2005/Atom"/>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>
